@@ -1,0 +1,9 @@
+cat > ~/Documents/IBMHackathon/Frontend/vercel.json << 'EOF'
+{
+  "build": {
+    "env": {
+      "VITE_API_URL": "https://backend-production-0d82c.up.railway.app"
+    }
+  }
+}
+EOF
