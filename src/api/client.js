@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+const API_BASE = "https://backend-production-0d82c.up.railway.app"
 
 const TIMEOUT_MS = 30_000
 
