@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
 const TIMEOUT_MS = 30_000
 
@@ -25,7 +25,7 @@ async function handleResponse(res) {
 // Backend expects { github_url }, not { repo_url }
 export async function ingestGithub(repoUrl) {
   const res = await withTimeout(
-    fetch(`${BASE_URL}/ingest/github`, {
+    fetch(`${API_BASE}/ingest/github`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ github_url: repoUrl }),
@@ -40,7 +40,7 @@ export async function ingestZip(file) {
   const formData = new FormData()
   formData.append('file', file)
   const res = await withTimeout(
-    fetch(`${BASE_URL}/ingest`, {
+    fetch(`${API_BASE}/ingest`, {
       method: 'POST',
       body: formData,
     })
@@ -51,7 +51,7 @@ export async function ingestZip(file) {
 // Step 1c — ingest from a local filesystem path (backend must run on same machine)
 export async function ingestLocal(localPath) {
   const res = await withTimeout(
-    fetch(`${BASE_URL}/ingest/local`, {
+    fetch(`${API_BASE}/ingest/local`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ local_path: localPath }),
@@ -63,7 +63,7 @@ export async function ingestLocal(localPath) {
 // Step 2 — trigger the modernization pipeline; returns a NEW job_id to poll
 export async function startModernize(ingestJobId) {
   const res = await withTimeout(
-    fetch(`${BASE_URL}/modernize`, {
+    fetch(`${API_BASE}/modernize`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ job_id: ingestJobId }),
@@ -75,12 +75,12 @@ export async function startModernize(ingestJobId) {
 // Step 3 — poll this with the modernize job_id
 export async function getStatus(jobId) {
   const res = await withTimeout(
-    fetch(`${BASE_URL}/status/${jobId}`)
+    fetch(`${API_BASE}/status/${jobId}`)
   )
   return handleResponse(res)
 }
 
 // Backend URL format is /download/{type}/{job_id}
 export function getDownloadUrl(jobId, type) {
-  return `${BASE_URL}/download/${type}/${jobId}`
+  return `${API_BASE}/download/${type}/${jobId}`
 }
